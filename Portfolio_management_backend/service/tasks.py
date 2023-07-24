@@ -3,13 +3,13 @@ from flask import jsonify
 from datetime import date
 
 
-# task={
-#     'name':'name',
-#     'status':'to do',
-#
-# }
+
 def createTask(email, projectid, task):
     project = projects.find_one({"projectId": projectid})
+    # changes
+    project["status"]='In Progress'
+    projects.update_one({"projectId": projectid},project)
+    # changes
     if project is None:
         return jsonify({'message': "Project Not Found"}), 301
     if project['manager'] != email:
@@ -21,6 +21,7 @@ def createTask(email, projectid, task):
     task['status'] = 'to do'
     task['createDate'] = str(date.today())
     tasks.insert_one(task)
+
     return jsonify(task),200
 
 

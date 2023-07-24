@@ -5,20 +5,21 @@ from datetime import date
 if count.find_one({'name':'cc'}) is None:
     count.insert_one({'cc':1,'name':'cc'})
 
+
 def addResource(email, res):
 
     active = activeUser.find_one({'email': email, 'role': 'ADMIN'})
     if active is None:
         return jsonify({'message': 'You are Not allowed'}), 403
     else:
-        cc=count.find_one({'name':'cc'})['cc']
-        resource['rid'] = cc;
-        count.update_one({'name':'cc'},{'$set':{'cc':cc+1}})
+        cc = count.find_one({'name': 'cc'})['cc']
+        res['rid'] = str(cc)  # Use cc directly as an integer value
+        count.update_one({'name': 'cc'}, {'$set': {'cc': cc + 1}})
         resource.insert_one(res)
-    return jsonify(res), 200
+    return jsonify({'message':"Added Successfully"}), 200
 
 
-def deleteResouce(email, resid):
+def deleteResource(email, resid):
     active = activeUser.find_one({'email': email, 'role': 'ADMIN'})
     if active is None:
         return jsonify({'message': 'You are Not allowed'}), 403

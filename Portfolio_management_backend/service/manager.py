@@ -70,22 +70,20 @@ def logout(email):
 
 
 def deleteUser(email):
-    activeUseri = activeUser.find_one({'email': email})
-    if activeUseri is None:
-        return jsonify({'message': "You have to Log In First"}), 403
-    else:
-        user.delete_one({'email': email})
-        activeUser.delete_one({'email': email})
-        return jsonify({'isDone': True}), 200
+
+    existing_user = user.find_one({'email': email})
+    if existing_user is None:
+        return jsonify({'message':"User Not found"}),301
+    user.delete_one({'email': email})
+    activeUser.delete_one({'email': email})
+    return jsonify({'isDone': True}), 200
+
 
 
 def updateUser(email, request):
-    activeUseri = activeUser.find_one({'email': email})
-    if activeUseri is None:
-        return jsonify({'message': "You have to Log In First"}), 403
-    else:
-        user.update_one({'email': email}, {'$set': request})
-        return jsonify(jsonify({'isUpdate': True})), 200
+    user.update_one({'email': email}, {'$set': request})
+    return jsonify({'isUpdate': True}), 200
+
 
 
 def readManager(email):
@@ -93,4 +91,12 @@ def readManager(email):
     if activeUseri is None:
         return jsonify({'message': "You have to Log In First"}), 403
     managers = list(user.find({'role': 'Manager'}))
+    for manager in managers:
+        manager['_id']=str(manager['_id'])
     return jsonify(managers), 201
+def isAdmin(email):
+    active_User=activeUser.find_one({'email':email,"role":"ADMIN"})
+    if activeUser is None:
+        return jsonify({'message':"I m Admin"}),200
+    else:
+        return jsonify({'message':"I m not Admin"}),201
