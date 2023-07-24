@@ -3,6 +3,7 @@ from flask_cors import CORS
 from service.manager import signUp,logIn,logout,deleteUser,updateUser,readManager
 from service.projects import createProject,asignProjectToManager,updateProject,deleteProject,displayProjects,display_single_project
 from service.resource import addResource,deleteResouce,updateResource,showResources,asignResourceToTask,show_single_resource
+from service.tasks import createTask, deleteTask, updateTask, showTasks, show_single_task
 app = Flask(__name__)
 CORS(app)
 @app.route('/user/signup')
@@ -51,6 +52,24 @@ def assignResources(email,task,resId):return asignResourceToTask(email,task,resI
 @app.route('/res/<email>/<resid>')
 def getSingleResource(email,resid):return show_single_resource(email,resid)
 
+@app.route('/task/<email>/<projectid>/<task>', methods=['POST'])
+def create_task(email, projectid, task): return createTask(email, projectid, task)
+
+
+@app.route('/task/<email>/<projectid>/<task>', methods=['DELETE'])
+def delete_task(email, projectid, task): return deleteTask(email, projectid, task)
+
+
+@app.route('/task/<email>/<projectid>/<task>', methods=['PATCH'])
+def delete_task(email, projectid, task): return updateTask(email, projectid, task)
+
+
+@app.route('/task/<email>/<projectid>', methods=['GET'])
+def show_all_tasks(email, projectid): return showTasks(email, projectid)
+
+
+@app.route('/task/<email>/<projectid>/<taskid>')
+def show_one_task(email, projectid, taskid): return show_single_task(email, projectid, taskid)
 
 
 if __name__ == '__main__':
